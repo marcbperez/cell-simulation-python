@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org).
 
+## Unreleased
+
+### Added
+
+  - Empty application class and unit tests.
+  - Python application folder structure and requirements files.
+  - A Dockerfile and docker-compose wrapper for automated deployment.
+  - The Gradle script for building this project.
+
 ## 0.1.0 - 2017-02-17
 
 ### Added
