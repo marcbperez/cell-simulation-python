@@ -1,0 +1,142 @@
+defaultTasks "watch", "dependencies", "clean", "build", "test"
+
+def path = System.getProperty("user.dir")
+def aptPackages = ["python-pip", "python-virtualenv", "python-opengl"]
+def buildDir = "${path}/build"
+def srcDir = "${path}/src"
+
+task virtualEnvCreate(type: Exec) {
+  description "Creates a Python virtual environment."
+  workingDir path
+  commandLine "virtualenv"
+  args = ["--clear", "-p", "/usr/bin/python2.7", "venv"]
+
+  new ByteArrayOutputStream()
+}
+
+task watch(type: Exec) {
+  def sourceFiles = fileTree(srcDir) {
+    exclude "**/*.pyc"
+  }
+
+  inputs.files(sourceFiles)
+  commandLine "true"
+
+  new ByteArrayOutputStream()
+}
+
+task dependencies() {
+  description "Installs all dependencies."
+
+  dependsOn {
+    tasks.findAll { task ->
+      task.name.startsWith("dependencies") && !task.name.equals("dependencies")
+    }
+  }
+}
+
+task dependenciesApt(type: Exec) {
+  description "Installs APT dependencies."
+  workingDir path
+  commandLine "apt-get"
+  args = ["install", "-y"] + aptPackages
+
+  new ByteArrayOutputStream()
+}
+
+task dependenciesPip(type: Exec) {
+  description "Installs pip Python dependencies."
+  workingDir path
+  commandLine "pip"
+  args = ["install", "-r", "${srcDir}/main/requirements.txt"]
+
+  new ByteArrayOutputStream()
+}
+
+task dependenciesPipTesting(type: Exec) {
+  description "Installs pip Python dependencies for testing."
+  workingDir path
+  commandLine "pip"
+  args = ["install", "-r", "${srcDir}/test/requirements.txt"]
+
+  new ByteArrayOutputStream()
+}
+
+task clean(type: Delete) {
+  description "Cleans build and temporary files."
+  delete "${buildDir}"
+
+  dependsOn {
+    tasks.findAll { task ->
+      task.name.startsWith("clean") && !task.name.equals("clean")
+    }
+  }
+
+  doLast {
+    new File(buildDir).mkdir()
+  }
+}
+
+task build() {
+  description "Runs all build tasks."
+
+  dependsOn {
+    tasks.findAll { task ->
+      task.name.startsWith("build") && !task.name.equals("build")
+    }
+  }
+}
+
+task buildSources(type: Copy) {
+  description "Updated sources from build."
+  from "${srcDir}/main"
+  into buildDir
+  include '**/*.py'
+}
+
+task buildFrozenRequirements(type: Exec) {
+  description "Freezes Python requirements."
+  workingDir path
+  commandLine "pip"
+  args = ["freeze"]
+
+  standardOutput = new ByteArrayOutputStream()
+
+  doLast {
+    File frozenRequirements = new File("${buildDir}/requirements.txt")
+    frozenRequirements.text = standardOutput.toString()
+  }
+}
+
+def testFiles = []
+def testFileTree = fileTree(dir: "${srcDir}/test", include: "**/*test.py")
+def testArgs = ["--with-cover", "--cover-html", "--cover-erase",
+  "--cover-package=main"]
+
+task test() {
+  description "Runs all test cases."
+  dependsOn "testNose"
+}
+
+testFileTree.each { File testFile ->
+  testFiles.add(testFile)
+  def fileName = testFile.getName().split("\\.")[0].capitalize()
+
+  task "testNose${fileName}"(type: Exec) {
+    description "Runs the ${fileName} case."
+    workingDir path
+    commandLine "nosetests"
+    args = testArgs.plus(testFile)
+
+    new ByteArrayOutputStream()
+  }
+}
+
+task testNose(type: Exec) {
+  description "Runs nose unit tests with coverage."
+  workingDir path
+  commandLine "nosetests"
+  args = testArgs.plus(testFiles)
+
+  new ByteArrayOutputStream()
+}

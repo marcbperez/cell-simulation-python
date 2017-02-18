@@ -4,3 +4,4 @@ build
 cover
 .coverage
 .gradle
+venv
