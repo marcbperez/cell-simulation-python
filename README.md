@@ -32,9 +32,9 @@ chmod +x /usr/local/bin/docker-compose
 ## Usage
 
 To build the sources run Gradle's main task from the project's root directory
-with `gradle` or via `sudo docker-compose up` if you are using the Docker
-wrapper. The second option will start a continuous build and updates will be
-built and tested every time a change is made. If all tests pass the compiled
+with `sudo -H gradle` or via `sudo docker-compose up` if you are using the
+Docker wrapper. The second option will start a continuous build and updates will
+be built and tested every time a change is made. If all tests pass the compiled
 version will be placed under `build`. Refer to the tests from the `src/test`
 folder for complete API usage and examples.
 
@@ -49,10 +49,10 @@ sudo docker-compose up
 Tests will be executed by default every time the project is built. To run them
 manually start a new build or use Gradle's test task. A coverage report will be
 generated under `cover/index.html`.  For a complete list of tasks including
-individual tests, check `gradle tasks`.
+individual tests, check `sudo -H gradle tasks --all`.
 
 ```bash
-gradle test
+sudo -H gradle test
 ```
 
 ## Troubleshooting
