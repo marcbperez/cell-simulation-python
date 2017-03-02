@@ -1,7 +1,9 @@
-*.log
+*.egg-info
 *.pyc
-build
-cover
+.cache
 .coverage
+.eggs
 .gradle
+htmlcov
 venv
+__pycache__
