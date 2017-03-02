@@ -1,58 +1,47 @@
 # cell-simulation-python
 
-A simulation environment written in Python. Supports non-visual, text-based and
-OpenGL execution, element behavior, interaction and a simle physics environment.
+A simulation environment written in Python and OpenGL. Supports element
+behavior, interaction and a simple physics environment.
 
 ## Installation
 
-This projects uses Gradle (at least version 3.3) as its build system along with
-a Docker and docker-compose wrapper for continuous development. On Ubuntu Linux
-distributions Gradle 3.3 can be installed via the following commands:
+This project uses Gradle (at least version 3.3) as its build system. On Ubuntu
+Linux distributions Gradle can be installed with the following commmands:
 
 ```bash
 sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:cwchien/gradle
 sudo apt-get update
-sudo apt-get install default-jdk gradle=3.3-0ubuntu1
+sudo apt-get install default-jdk gradle=3.4-0ubuntu1
 ```
 
-If you prefer to install Docker and docker-compose (highly recommended) refer to
-the [official instructions][install-docker-compose].
+Project and system dependencies are managed by the build script. To install them
+get the latest version and run the `dependencies` task:
 
 ```bash
-sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://apt.dockerproject.org/gpg | sudo apt-key add -
-sudo add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"
-sudo apt-get update
-sudo apt-get install docker-engine
-curl -L "https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+git clone https://github.com/marcbperez/cell-simulation-python
+cd cell-simulation-python
+sudo -H gradle dependencies
 ```
 
 ## Usage
 
-To build the sources run Gradle's main task from the project's root directory
-with `sudo -H gradle` or via `sudo docker-compose up` if you are using the
-Docker wrapper. The second option will start a continuous build and updates will
-be built and tested every time a change is made. If all tests pass the compiled
-version will be placed under `build`. Refer to the tests from the `src/test`
-folder for complete API usage and examples.
+This project can be installed with pip and used as a Python package.
 
-```bash
-git clone https://github.com/marcbperez/cell-simulation-python.git
-cd cell-simulation-python.git
-sudo docker-compose up
+```python
+from cellsimulation.scene import Scene
 ```
 
 ## Testing
 
-Tests will be executed by default every time the project is built. To run them
-manually start a new build or use Gradle's test task. A coverage report will be
-generated under `cover/index.html`.  For a complete list of tasks including
-individual tests, check `sudo -H gradle tasks --all`.
+Tests will be executed by default every time the project is built. A coverage
+report will be generated under `htmlcov/index.html`. To get a complete list of
+build tasks, check `tasks`:
 
 ```bash
+sudo -H gradle
 sudo -H gradle test
+sudo -H gradle tasks --all
 ```
 
 ## Troubleshooting
