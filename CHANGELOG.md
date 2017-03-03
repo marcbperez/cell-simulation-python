@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org).
 
+## Unreleased
+
+### Added
+
+  - OpenGL Scene, shapes and forces for the simulation environment.
+  - Tests for simulation environment.
+
 ## 0.3.0 - 2017-03-02
 
 ### Added
